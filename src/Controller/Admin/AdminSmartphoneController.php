@@ -68,16 +68,22 @@ class AdminSmartphoneController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/{id}/edit', name: 'app_admin_smartphone_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         Smartphone $smartphone,
-        SmartphoneRepository $smartphoneRepository
+        SmartphoneRepository $smartphoneRepository,
+        PriceCalculatorService $priceCalculator,
     ): Response {
         $form = $this->createForm(Smartphone1Type::class, $smartphone);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $priceTotal = $priceCalculator->calculateTotalPrice($smartphone);
+            $smartphone->setPrice($priceTotal);
             $smartphoneRepository->save($smartphone, true);
             $this->addFlash('info', 'Smartphone modifié.');
 
