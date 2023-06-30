@@ -22,23 +22,20 @@ class Smartphone1Type extends AbstractType
             ->add('brand', EntityType::class, [
                 "class" => Brand::class,
                 "choice_label" => 'name',
-                "label" => "Marque",
+                "label" => "Marque du téléphone",
             ])
             ->add('model', EntityType::class, [
                 "class" => Model::class,
                 "choice_label" => 'name',
-                "label" => "Modèle",
+                "label" => "Modèle du téléphone",
                 "group_by" => function (Model $model) {
                     return $model->getBrand()->getName();
                 },
             ])
-            ->add('price', null, [
-                "label" => "Prix",
-            ])
             ->add('ram', EntityType::class, [
                 "class" => Ram::class,
                 "choice_label" => "ram",
-                "label" => "Mémoire vive (Go)",
+                "label" => "Ram (Go)",
             ])
             ->add('stockage', EntityType::class, [
                 "class" => Stockage::class,
@@ -48,7 +45,7 @@ class Smartphone1Type extends AbstractType
             ->add('status', EntityType::class, [
                 'class' => Status::class,
                 'choice_label' => 'status',
-                "label" => "Etat du téléphone",
+                "label" => "Etat général du téléphone",
             ])
         ;
     }

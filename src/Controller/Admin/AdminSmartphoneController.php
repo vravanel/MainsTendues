@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Smartphone;
 use App\Form\Smartphone1Type;
 use App\Repository\SmartphoneRepository;
+use App\Service\PriceCalculatorService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,14 +32,22 @@ class AdminSmartphoneController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/new', name: 'app_admin_smartphone_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, SmartphoneRepository $smartphoneRepository): Response
-    {
+    public function new(
+        Request $request,
+        PriceCalculatorService $priceCalculator,
+        SmartphoneRepository $smartphoneRepository
+    ): Response {
         $smartphone = new Smartphone();
         $form = $this->createForm(Smartphone1Type::class, $smartphone);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $priceTotal = $priceCalculator->calculateTotalPrice($smartphone);
+            $smartphone->setPrice($priceTotal);
             $smartphoneRepository->save($smartphone, true);
             $this->addFlash('info', 'Smartphone créé.');
 
